@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="../assets/styles.min.css" rel="stylesheet">
+	<title>Google Maps: Zoom-to-Fit Markers (v3)</title>
+	<script src="//maps.googleapis.com/maps/api/js?v=3&amp;sensor=false&amp;key=AIzaSyABi8h0OxhjvxG2jvHPkGnr2D4poJjUWFY"></script>
+</head>
+<body>
+	<div id="mapdiv" style="height: 400px;"></div>
+	<script>
+		window.addEventListener("load", func1);
+var map;
+
+function func1() {
+  map = new google.maps.Map(document.getElementById('mapdiv'), {
+    zoom: 4,
+    center: {
+      lat: 0,
+      lng: 0
+    }
+  });
+  // Set the stroke width, and fill color for each polygon
+  var featureStyle = {
+    fillColor: '#ADFF2F',
+    fillOpacity: 0.1,
+    strokeColor: '#ADFF2F',
+    strokeWeight: 1
+  };
+
+  // zoom to show all the features
+  var bounds = new google.maps.LatLngBounds();
+  map.data.addListener('addfeature', function(e) {
+    processPoints(e.feature.getGeometry(), bounds.extend, bounds);
+    map.fitBounds(bounds);
+  });
+
+  // zoom to the clicked feature
+  map.data.addListener('click', function(e) {
+    var bounds = new google.maps.LatLngBounds();
+    processPoints(e.feature.getGeometry(), bounds.extend, bounds);
+    map.fitBounds(bounds);
+  });
+  //Load mapdata via geoJson
+  map.data.loadGeoJson('../maps/balikpapan.json');
+}
+
+function processPoints(geometry, callback, thisArg) {
+  if (geometry instanceof google.maps.LatLng) {
+    callback.call(thisArg, geometry);
+  } else if (geometry instanceof google.maps.Data.Point) {
+    callback.call(thisArg, geometry.get());
+  } else {
+    geometry.getArray().forEach(function(g) {
+      processPoints(g, callback, thisArg);
+    });
+  }
+}
+	</script>
+</body>
+</html>
