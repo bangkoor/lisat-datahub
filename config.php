@@ -2,7 +2,7 @@
 session_start();
 //koneksi ke database 
 $user_name = "root";
-$password = "p4tri0t45";
+$password = "password";
 $database = "lisat.order.new";
 $host_name = "localhost"; 
  
